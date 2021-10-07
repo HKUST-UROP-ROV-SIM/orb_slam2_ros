@@ -69,6 +69,7 @@ public:
   ~Node();
 
 protected:
+  void LoadOrbParameters(sensor_msgs::msg::CameraInfo::SharedPtr camera_info);
   void Update();
   bool isInitialized()
   {
@@ -77,7 +78,7 @@ protected:
 
   ORB_SLAM2::System * orb_slam_;
   rclcpp::Time current_frame_time_;
-  std::shared_ptr<image_transport::ImageTransport> image_transport_;
+  std::shared_ptr<image_transport::ImageTransport> image_transport_;  // Not used in StereoNode, H264StereoNode
 
   bool subscribe_best_effort_param_;
 
@@ -90,7 +91,6 @@ private:
     const shared_ptr<rmw_request_id_t>/*request_header*/,
     const shared_ptr<orb_slam2_ros::srv::SaveMap::Request> request,
     const shared_ptr<orb_slam2_ros::srv::SaveMap::Response> response);
-  void LoadOrbParameters(sensor_msgs::msg::CameraInfo::SharedPtr camera_info);
   void cameraInfoCallback(sensor_msgs::msg::CameraInfo::SharedPtr msg);
 
   tf2::Transform TransformFromMat(cv::Mat position_mat);
@@ -102,7 +102,7 @@ private:
   image_transport::Publisher rendered_image_publisher_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr map_points_publisher_;
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pose_publisher_;
-  rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_sub_;
+  rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_sub_;  // Not used in H264StereoNode
   rclcpp::Service<orb_slam2_ros::srv::SaveMap>::SharedPtr service_server_;
 
   std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;

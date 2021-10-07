@@ -162,6 +162,48 @@ install(TARGETS ${PROJECT_NAME}_mono ${PROJECT_NAME}_stereo ${PROJECT_NAME}_rgbd
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
+# Additional dependencies for H264StereoDecoder, these are optional
+find_package(stereo_decoder)
+if (stereo_decoder_FOUND)
+  message(STATUS "stereo_decoder found, will also build H264StereoDecoder")
+
+  find_package(h264_msgs REQUIRED)
+  find_package(image_geometry REQUIRED)
+
+  # ffmpeg libraries
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(PC_AVDEVICE REQUIRED libavdevice>=58)
+  pkg_check_modules(PC_AVFORMAT REQUIRED libavformat>=58)
+  pkg_check_modules(PC_AVCODEC REQUIRED libavcodec>=58)
+  pkg_check_modules(PC_AVUTIL REQUIRED libavutil>=56)
+  pkg_check_modules(PC_SWSCALE REQUIRED libswscale>=5)
+
+  add_executable (${PROJECT_NAME}_h264_stereo
+    ros/src/H264StereoNode.cc
+    ros/src/Node.cc
+  )
+  ament_target_dependencies(${PROJECT_NAME}_h264_stereo
+    ${dependencies}
+    h264_msgs
+    image_geometry
+    stereo_decoder
+    )
+  target_link_libraries(${PROJECT_NAME}_h264_stereo
+    orb_slam2_ros_core
+    ${OpenCV_LIBS}
+    ${PC_AVDEVICE_LIBRARIES}
+    ${PC_AVFORMAT_LIBRARIES}
+    ${PC_AVCODEC_LIBRARIES}
+    ${PC_AVUTIL_LIBRARIES}
+    ${PC_SWSCALE_LIBRARIES}
+  )
+
+  # Is this necessary?
+  rosidl_target_interfaces(${PROJECT_NAME}_h264_stereo ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+  install(TARGETS ${PROJECT_NAME}_h264_stereo RUNTIME DESTINATION lib/${PROJECT_NAME})
+endif()
+
 install(TARGETS orb_slam2_ros_core DBoW2 g2o
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib

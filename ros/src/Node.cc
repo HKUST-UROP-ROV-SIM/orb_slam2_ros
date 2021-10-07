@@ -336,9 +336,18 @@ void Node::LoadOrbParameters(sensor_msgs::msg::CameraInfo::SharedPtr camera_info
   parameters.k3 = camera_info->d[4];
 
   if (sensor_ == ORB_SLAM2::System::STEREO || sensor_ == ORB_SLAM2::System::RGBD) {
+#if 1
+    // camera_baseline is declared above, so get_parameter always returns true
+    get_parameter("camera_baseline", parameters.baseline);
+
+    // ROS camera calibration puts stereo baseline in the right camera info, not left,
+    // so the sign is flipped. If we had right camera info we could do this:
+    // parameters.baseline = -right_camera_info->p[3]
+#else
     if (!get_parameter("camera_baseline", parameters.baseline)) {
       parameters.baseline = camera_info->p[3];
     }
+#endif
   }
 
   orb_slam_ = new ORB_SLAM2::System(
