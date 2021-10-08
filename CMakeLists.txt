@@ -163,7 +163,7 @@ install(TARGETS ${PROJECT_NAME}_mono ${PROJECT_NAME}_stereo ${PROJECT_NAME}_rgbd
 )
 
 # Additional dependencies for H264StereoDecoder, these are optional
-find_package(stereo_decoder)
+find_package(stereo_decoder QUIET)
 if (stereo_decoder_FOUND)
   message(STATUS "stereo_decoder found, will also build H264StereoDecoder")
 
@@ -202,6 +202,8 @@ if (stereo_decoder_FOUND)
   rosidl_target_interfaces(${PROJECT_NAME}_h264_stereo ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
   install(TARGETS ${PROJECT_NAME}_h264_stereo RUNTIME DESTINATION lib/${PROJECT_NAME})
+else()
+  message(STATUS "stereo_decoder not found, will _not_ build H264StereoDecoder")
 endif()
 
 install(TARGETS orb_slam2_ros_core DBoW2 g2o
