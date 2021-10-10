@@ -59,6 +59,7 @@ H264StereoNode::H264StereoNode(
   const rclcpp::NodeOptions & node_options)
   : Node(node_name, node_options)
 {
+  declare_parameter("period_ms", rclcpp::ParameterValue(1000));
 }
 
 void H264StereoNode::init()
@@ -111,6 +112,13 @@ void H264StereoNode::init()
   // Run the SLAM in it's own thread
   slam_thread_ = std::thread([this]()
   {
+    // The cameras run at 20fps, the ORB SLAM algorithm runs at ~2.5fps on my desktop.
+    // Provide a mechanism to slow down the SLAM algorithm to reduce CPU load.
+    int period_ms;
+    get_parameter("period_ms", period_ms);
+    auto target_period = rclcpp::Duration(period_ms * 1000000);
+    rclcpp::Time previous_time = now();
+
     while (true) {
       if (!isInitialized() || !left_model_.initialized() || !right_model_.initialized()) {
         RCLCPP_WARN(get_logger(), "missing camera info, sleep for 1s");  // NOLINT
@@ -118,7 +126,12 @@ void H264StereoNode::init()
         continue;
       }
 
-      // The cameras run at 20fps, but I'm clocking this SLAM algorithm at ~2.5fps.
+      auto sleep_time = target_period - (now() - previous_time);
+      if (sleep_time.nanoseconds() > 0) {
+        std::this_thread::sleep_for(std::chrono::nanoseconds(sleep_time.nanoseconds()));
+      }
+      previous_time = now();
+
       // The stereo decoder will decode all H.264 packets on both streams, but only keep the last stereo pair.
       std::unique_ptr<sensor_msgs::msg::Image> rawImageLeftUnique;
       std::unique_ptr<sensor_msgs::msg::Image> rawImageRightUnique;
