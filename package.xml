@@ -33,12 +33,12 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
-  <!-- Optional dependencies for H264StereoDecoder -->
-  <!--  <depend>ffmpeg</depend>-->
-  <!--  <depend>h264_msgs</depend>-->
-  <!--  <depend>image_geometry</depend>-->
-  <!--  <depend>libavdevice-dev</depend>-->
-  <!--  <depend>stereo_decoder</depend>-->
+  <!-- Additional dependencies for H264StereoDecoder -->
+  <depend>ffmpeg</depend>
+  <depend>h264_msgs</depend>
+  <depend>image_geometry</depend>
+  <depend>libavdevice-dev</depend>
+  <depend>stereo_decoder</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
