@@ -329,11 +329,16 @@ void Node::LoadOrbParameters(sensor_msgs::msg::CameraInfo::SharedPtr camera_info
   parameters.fy = camera_info->k[4];
   parameters.cx = camera_info->k[2];
   parameters.cy = camera_info->k[5];
-  parameters.k1 = camera_info->d[0];
-  parameters.k2 = camera_info->d[1];
-  parameters.p1 = camera_info->d[2];
-  parameters.p2 = camera_info->d[3];
-  parameters.k3 = camera_info->d[4];
+  if (sensor_ == ORB_SLAM2::System::STEREO) {
+    RCLCPP_INFO(get_logger(), "Stereo camera, images must be rectified, ignoring distortion");
+  } else {
+    RCLCPP_INFO(get_logger(), "Mono or RGBD camera, images should _not_ be rectified, using distortion");
+    parameters.k1 = camera_info->d[0];
+    parameters.k2 = camera_info->d[1];
+    parameters.p1 = camera_info->d[2];
+    parameters.p2 = camera_info->d[3];
+    parameters.k3 = camera_info->d[4];
+  }
 
   if (sensor_ == ORB_SLAM2::System::STEREO || sensor_ == ORB_SLAM2::System::RGBD) {
 #if 1
