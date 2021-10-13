@@ -22,7 +22,6 @@
 
 #include <message_filters/subscriber.h>
 #include <message_filters/time_synchronizer.h>
-#include <message_filters/sync_policies/approximate_time.h>
 
 int main(int argc, char ** argv)
 {
@@ -45,6 +44,10 @@ StereoNode::StereoNode(
   const rclcpp::NodeOptions & node_options)
 : Node(node_name, node_options)
 {
+  (void) left_camera_info_sub_;
+  (void) right_camera_info_sub_;
+
+  declare_parameter("rectify", rclcpp::ParameterValue(false));
 }
 
 void StereoNode::init()
@@ -61,8 +64,44 @@ void StereoNode::init()
     shared_from_this(), "/image_right/image_color_rect", image_qos);
 
   sync_ = new message_filters::Synchronizer<sync_pol>(sync_pol(10), *left_sub_, *right_sub_);
-  sync_->registerCallback(std::bind(&StereoNode::ImageCallback, this,
+  sync_->registerCallback(std::bind(&StereoNode::ImageCallback, this, // NOLINT
     std::placeholders::_1, std::placeholders::_2));
+
+  get_parameter("rectify", rectify_);
+  RCLCPP_INFO(get_logger(), "rectify: %d", rectify_);
+
+  if (rectify_) {
+    rclcpp::QoS info_qos(10);
+    if (subscribe_best_effort_param_) {
+      info_qos.best_effort();
+    } else {
+      info_qos.reliable();
+    }
+
+    left_camera_info_sub_ = create_subscription<sensor_msgs::msg::CameraInfo>("stereo/left/camera_info", info_qos,
+      [this](sensor_msgs::msg::CameraInfo::SharedPtr msg) // NOLINT
+      {
+        if (!left_model_.initialized()) {
+          RCLCPP_INFO(get_logger(), "init left camera model"); // NOLINT
+          left_model_.fromCameraInfo(msg);
+        }
+      });
+
+    right_camera_info_sub_ = create_subscription<sensor_msgs::msg::CameraInfo>("stereo/right/camera_info", info_qos,
+      [this](sensor_msgs::msg::CameraInfo::SharedPtr msg) // NOLINT
+      {
+        // TODO use left or right camera info?
+        // if (!isInitialized()) {
+        //   RCLCPP_INFO(get_logger(), "init ORB params"); // NOLINT
+        //   LoadOrbParameters(msg);
+        // }
+
+        if (!right_model_.initialized()) {
+          RCLCPP_INFO(get_logger(), "init right camera model"); // NOLINT
+          right_model_.fromCameraInfo(msg);
+        }
+      });
+  }
 }
 
 StereoNode::~StereoNode()
@@ -97,8 +136,19 @@ void StereoNode::ImageCallback(
 
   current_frame_time_ = msgLeft->header.stamp;
 
-  rclcpp::Time msg_time = cv_ptrLeft->header.stamp;
-  orb_slam_->TrackStereo(cv_ptrLeft->image, cv_ptrRight->image, msg_time.seconds());
+  if (rectify_) {
+    if (!left_model_.initialized() || !right_model_.initialized()) {
+      RCLCPP_WARN(get_logger(), "missing camera info");
+      return;
+    }
+
+    cv::Mat rectLeft, rectRight;
+    left_model_.rectifyImage(cv_ptrLeft->image, rectLeft);
+    right_model_.rectifyImage(cv_ptrRight->image, rectRight);
+    orb_slam_->TrackStereo(rectLeft, rectRight, current_frame_time_.seconds());
+  } else {
+    orb_slam_->TrackStereo(cv_ptrLeft->image, cv_ptrRight->image, current_frame_time_.seconds());
+  }
 
   Update();
 }
