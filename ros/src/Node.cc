@@ -325,14 +325,19 @@ void Node::LoadOrbParameters(sensor_msgs::msg::CameraInfo::SharedPtr camera_info
     get_parameter("depth_map_factor", parameters.depthMapFactor);
   }
 
-  parameters.fx = camera_info->k[0];
-  parameters.fy = camera_info->k[4];
-  parameters.cx = camera_info->k[2];
-  parameters.cy = camera_info->k[5];
   if (sensor_ == ORB_SLAM2::System::STEREO) {
-    RCLCPP_INFO(get_logger(), "Stereo camera, images must be rectified, ignoring distortion");
+    RCLCPP_INFO(get_logger(), "Stereo, images must be rectified, use info.p, ignore info.d");
+    parameters.fx = camera_info->p[0];
+    parameters.fy = camera_info->p[5];  // p is 3x4, k is 3x3
+    parameters.cx = camera_info->p[2];
+    parameters.cy = camera_info->p[6];
   } else {
-    RCLCPP_INFO(get_logger(), "Mono or RGBD camera, images should _not_ be rectified, using distortion");
+    RCLCPP_INFO(get_logger(), "Mono or RGBD, use info.k and info.d");
+    parameters.fx = camera_info->k[0];
+    parameters.fy = camera_info->k[4];
+    parameters.cx = camera_info->k[2];
+    parameters.cy = camera_info->k[5];
+
     parameters.k1 = camera_info->d[0];
     parameters.k2 = camera_info->d[1];
     parameters.p1 = camera_info->d[2];
