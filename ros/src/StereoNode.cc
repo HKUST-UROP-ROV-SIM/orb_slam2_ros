@@ -19,6 +19,7 @@
 */
 
 #include "StereoNode.hpp"
+#include "perf.hpp"
 
 #include <message_filters/subscriber.h>
 #include <message_filters/time_synchronizer.h>
@@ -90,12 +91,6 @@ void StereoNode::init()
     right_camera_info_sub_ = create_subscription<sensor_msgs::msg::CameraInfo>("stereo/right/camera_info", info_qos,
       [this](sensor_msgs::msg::CameraInfo::SharedPtr msg) // NOLINT
       {
-        // TODO use left or right camera info?
-        // if (!isInitialized()) {
-        //   RCLCPP_INFO(get_logger(), "init ORB params"); // NOLINT
-        //   LoadOrbParameters(msg);
-        // }
-
         if (!right_model_.initialized()) {
           RCLCPP_INFO(get_logger(), "init right camera model"); // NOLINT
           right_model_.fromCameraInfo(msg);
@@ -117,6 +112,8 @@ void StereoNode::ImageCallback(
     RCLCPP_WARN(get_logger(), "Camera info not received, node has not been initialized!");
     return;
   }
+
+  START_PERF()
 
   cv_bridge::CvImageConstPtr cv_ptrLeft;
   try {
@@ -151,4 +148,6 @@ void StereoNode::ImageCallback(
   }
 
   Update();
+
+  STOP_PERF("SLAM time")
 }

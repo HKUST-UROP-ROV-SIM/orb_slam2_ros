@@ -19,20 +19,7 @@
 */
 
 #include "H264StereoNode.hpp"
-
-#undef RUN_PERF
-#ifdef RUN_PERF
-#define START_PERF()\
-auto __start__ = std::chrono::high_resolution_clock::now();
-
-#define STOP_PERF(msg)\
-auto __stop__ = std::chrono::high_resolution_clock::now();\
-std::cout << msg << " " << std::chrono::duration_cast<std::chrono::microseconds>(__stop__ - __start__).count()\
-  << " microseconds" << std::endl;
-#else
-#define START_PERF()
-#define STOP_PERF(msg)
-#endif
+#include "perf.hpp"
 
 int main(int argc, char **argv)
 {
@@ -59,7 +46,6 @@ H264StereoNode::H264StereoNode(
   const rclcpp::NodeOptions & node_options)
   : Node(node_name, node_options)
 {
-  declare_parameter("period_ms", rclcpp::ParameterValue(1000));
 }
 
 void H264StereoNode::init()
@@ -112,11 +98,10 @@ void H264StereoNode::init()
   // Run the SLAM in it's own thread
   slam_thread_ = std::thread([this]()
   {
-    // The cameras run at 20fps, the ORB SLAM algorithm runs at ~2.5fps on my desktop.
     // Provide a mechanism to slow down the SLAM algorithm to reduce CPU load.
-    int period_ms;
-    get_parameter("period_ms", period_ms);
-    auto target_period = rclcpp::Duration(period_ms * 1000000);
+    int camera_fps;
+    get_parameter("camera_fps", camera_fps);
+    auto target_period = rclcpp::Duration(1000000000 / camera_fps);
     rclcpp::Time previous_time = now();
 
     while (true) {

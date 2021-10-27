@@ -73,7 +73,7 @@ private:
   rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr left_camera_info_sub_;
   rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr right_camera_info_sub_;
 
-  bool rectify_;
+  bool rectify_{};
   image_geometry::PinholeCameraModel left_model_;
   image_geometry::PinholeCameraModel right_model_;
 };
