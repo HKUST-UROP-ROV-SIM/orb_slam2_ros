@@ -35,7 +35,7 @@ FrameDrawer::FrameDrawer(Map* pMap):mpMap(pMap)
     mIm = cv::Mat(480,640,CV_8UC3, cv::Scalar(0,0,0));
 }
 
-cv::Mat FrameDrawer::DrawFrame(orca_msgs::msg::Slam & msg)
+cv::Mat FrameDrawer::DrawFrame(orb_slam2_ros::msg::Status & msg)
 {
     cv::Mat im;
     vector<cv::KeyPoint> vIniKeys; // Initialization: KeyPoints in reference frame
@@ -126,7 +126,7 @@ cv::Mat FrameDrawer::DrawFrame(orca_msgs::msg::Slam & msg)
 }
 
 
-void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText, orca_msgs::msg::Slam & msg)
+void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText, orb_slam2_ros::msg::Status & msg)
 {
     msg.state = nState;
     msg.only_tracking = mbOnlyTracking;

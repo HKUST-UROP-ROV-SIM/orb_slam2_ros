@@ -485,7 +485,7 @@ vector<cv::KeyPoint> System::GetTrackedKeyPointsUn()
     return mTrackedKeyPointsUn;
 }
 
-cv::Mat System::DrawCurrentFrame (orca_msgs::msg::Slam & msg) {
+cv::Mat System::DrawCurrentFrame (orb_slam2_ros::msg::Status & msg) {
   return mpFrameDrawer->DrawFrame(msg);
 }
 

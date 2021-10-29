@@ -33,7 +33,6 @@ find_package(rosidl_default_generators REQUIRED)
 find_package(stereo_decoder REQUIRED)
 find_package(h264_msgs REQUIRED)
 find_package(image_geometry REQUIRED)
-find_package(orca_msgs REQUIRED)
 
 # ffmpeg libraries
 find_package(PkgConfig REQUIRED)
@@ -73,6 +72,7 @@ find_package(Eigen3 REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/SaveMap.srv"
+  "msg/Status.msg"
   DEPENDENCIES builtin_interfaces std_msgs
 )
 
@@ -109,7 +109,6 @@ add_library(orb_slam2_ros_core SHARED
   orb_slam2/src/Initializer.cc
 )
 ament_target_dependencies(orb_slam2_ros_core
-  orca_msgs
   rclcpp
   std_msgs
   sensor_msgs
@@ -120,6 +119,8 @@ target_link_libraries(orb_slam2_ros_core
   DBoW2
   g2o
 )
+
+rosidl_target_interfaces(orb_slam2_ros_core ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 # map serialization addition - library boost serialization 
 message(STATUS "Compile With map save/load function")

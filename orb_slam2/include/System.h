@@ -28,7 +28,7 @@
 #include <opencv2/core/core.hpp>
 #include <sys/resource.h>
 
-#include "orca_msgs/msg/slam.hpp"
+#include "orb_slam2_ros/msg/status.hpp"
 
 #include "Tracking.h"
 #include "FrameDrawer.h"
@@ -129,7 +129,7 @@ public:
     std::vector<MapPoint*> GetTrackedMapPoints();
     std::vector<cv::KeyPoint> GetTrackedKeyPointsUn();
 
-    cv::Mat DrawCurrentFrame (orca_msgs::msg::Slam & msg);
+    cv::Mat DrawCurrentFrame (orb_slam2_ros::msg::Status & msg);
 
     std::vector<MapPoint*> GetAllMapPoints();
 

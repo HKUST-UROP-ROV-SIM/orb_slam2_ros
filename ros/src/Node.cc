@@ -89,7 +89,7 @@ void Node::init(const ORB_SLAM2::System::eSensor & sensor)
   }
 
   // Publish status
-  status_publisher_ = create_publisher<orca_msgs::msg::Slam>(node_name_ + "/status", 10);
+  status_publisher_ = create_publisher<orb_slam2_ros::msg::Status>(node_name_ + "/status", 10);
 
   // Enable publishing camera's pose as PoseStamped message
   if (publish_pose_param_) {
@@ -142,7 +142,7 @@ void Node::Update()
     }
   }
 
-  orca_msgs::msg::Slam msg;
+  orb_slam2_ros::msg::Status msg;
   PublishRenderedImage(orb_slam_->DrawCurrentFrame(msg));
   // TODO add stamps for left and right images
   PublishStatusMsg(msg);
@@ -193,7 +193,7 @@ void Node::PublishRenderedImage(cv::Mat image)
 }
 
 
-void Node::PublishStatusMsg(orca_msgs::msg::Slam & msg)
+void Node::PublishStatusMsg(orb_slam2_ros::msg::Status & msg)
 {
   msg.header.stamp = current_frame_time_;
   msg.header.frame_id = map_frame_id_param_;

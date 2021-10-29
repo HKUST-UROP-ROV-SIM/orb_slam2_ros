@@ -40,9 +40,6 @@
   <depend>libavdevice-dev</depend>
   <depend>stereo_decoder</depend>
 
-  <!-- Additional dependencies for diagnostics -->
-  <depend>orca_msgs</depend>
-
   <export>
     <build_type>ament_cmake</build_type>
   </export>

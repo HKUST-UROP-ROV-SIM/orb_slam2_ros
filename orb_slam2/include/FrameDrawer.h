@@ -21,7 +21,7 @@
 #ifndef FRAMEDRAWER_H
 #define FRAMEDRAWER_H
 
-#include "orca_msgs/msg/slam.hpp"
+#include "orb_slam2_ros/msg/status.hpp"
 
 #include "Tracking.h"
 #include "MapPoint.h"
@@ -47,11 +47,11 @@ public:
     void Update(Tracking *pTracker);
 
     // Draw last processed frame.
-    cv::Mat DrawFrame(orca_msgs::msg::Slam & msg);
+    cv::Mat DrawFrame(orb_slam2_ros::msg::Status & msg);
 
 protected:
 
-    void DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText, orca_msgs::msg::Slam & msg);
+    void DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText, orb_slam2_ros::msg::Status & msg);
 
     // Info of the frame to be drawn
     cv::Mat mIm;
