@@ -133,7 +133,7 @@ void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText, orb_sla
     msg.keyframes = 0;
     msg.map_points = 0;
     msg.tracked = 0;
-    msg.tracked_v0 = 0;
+    msg.tracked_vo = 0;
 
     stringstream s;
     if(nState==Tracking::NO_IMAGES_YET)
@@ -155,7 +155,7 @@ void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText, orb_sla
         msg.keyframes = nKFs;
         msg.map_points = nMPs;
         msg.tracked = mnTracked;
-        msg.tracked_v0 = mnTrackedVO;
+        msg.tracked_vo = mnTrackedVO;
     }
     else if(nState==Tracking::LOST)
     {

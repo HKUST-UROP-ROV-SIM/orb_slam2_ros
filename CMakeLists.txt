@@ -226,12 +226,15 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+# DBoW2 and g2o don't have CMake files, so don't export them
+# This allows other ROS2 projects to depend on orb_slam2_ros for msg and srv definitions
 ament_export_include_directories(include)
 ament_export_dependencies(
   ${dependencies}
   rosidl_default_runtime
-  DBoW2
-  g2o
+#  DBoW2
+#  g2o
 )
-ament_export_libraries(orb_slam2_ros_core libDBoW2 libg2o)
+#ament_export_libraries(orb_slam2_ros_core libDBoW2 libg2o)
+ament_export_libraries(orb_slam2_ros_core)
 ament_package()

@@ -16,4 +16,4 @@ bool only_tracking                  # mbOnlyTracking
 int32 keyframes                     # mpMap->KeyFramesInMap()
 int32 map_points                    # mpMap->MapPointsInMap()
 int32 tracked                       # mnTracked
-int32 tracked_v0                    # mnTrackedV0
+int32 tracked_vo                    # mnTrackedVO
