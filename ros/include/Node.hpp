@@ -87,6 +87,7 @@ private:
   void PublishPositionAsTransform(cv::Mat position);
   void PublishPositionAsPoseStamped(cv::Mat position);
   void PublishRenderedImage(cv::Mat image);
+  void PublishStatusMsg(orca_msgs::msg::Slam & msg);
   void SaveMapSrv(
     const shared_ptr<rmw_request_id_t>/*request_header*/,
     const shared_ptr<orb_slam2_ros::srv::SaveMap::Request> request,
@@ -100,6 +101,7 @@ private:
   ORB_SLAM2::System::eSensor sensor_;
 
   image_transport::Publisher rendered_image_publisher_;
+  rclcpp::Publisher<orca_msgs::msg::Slam>::SharedPtr status_publisher_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr map_points_publisher_;
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pose_publisher_;
   rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_sub_;  // Not used in H264StereoNode

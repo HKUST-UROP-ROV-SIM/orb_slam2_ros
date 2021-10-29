@@ -33,6 +33,7 @@ find_package(rosidl_default_generators REQUIRED)
 find_package(stereo_decoder REQUIRED)
 find_package(h264_msgs REQUIRED)
 find_package(image_geometry REQUIRED)
+find_package(orca_msgs REQUIRED)
 
 # ffmpeg libraries
 find_package(PkgConfig REQUIRED)
@@ -108,6 +109,7 @@ add_library(orb_slam2_ros_core SHARED
   orb_slam2/src/Initializer.cc
 )
 ament_target_dependencies(orb_slam2_ros_core
+  orca_msgs
   rclcpp
   std_msgs
   sensor_msgs

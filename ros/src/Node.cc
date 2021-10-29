@@ -88,6 +88,9 @@ void Node::init(const ORB_SLAM2::System::eSensor & sensor)
         node_name_ + "/map_points", 1);
   }
 
+  // Publish status
+  status_publisher_ = create_publisher<orca_msgs::msg::Slam>(node_name_ + "/status", 10);
+
   // Enable publishing camera's pose as PoseStamped message
   if (publish_pose_param_) {
     pose_publisher_ = create_publisher<geometry_msgs::msg::PoseStamped>(node_name_ + "/pose", 1);
@@ -139,7 +142,11 @@ void Node::Update()
     }
   }
 
-  PublishRenderedImage(orb_slam_->DrawCurrentFrame());
+  orca_msgs::msg::Slam msg;
+  PublishRenderedImage(orb_slam_->DrawCurrentFrame(msg));
+  // TODO add stamps for left and right images
+  PublishStatusMsg(msg);
+
   if (publish_pointcloud_param_) {
     PublishMapPoints(orb_slam_->GetAllMapPoints());
   }
@@ -183,6 +190,14 @@ void Node::PublishRenderedImage(cv::Mat image)
   const sensor_msgs::msg::Image::SharedPtr rendered_image_msg =
     cv_bridge::CvImage(header, "bgr8", image).toImageMsg();
   rendered_image_publisher_.publish(rendered_image_msg);
+}
+
+
+void Node::PublishStatusMsg(orca_msgs::msg::Slam & msg)
+{
+  msg.header.stamp = current_frame_time_;
+  msg.header.frame_id = map_frame_id_param_;
+  status_publisher_->publish(msg);
 }
 
 

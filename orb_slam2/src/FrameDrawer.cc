@@ -35,7 +35,7 @@ FrameDrawer::FrameDrawer(Map* pMap):mpMap(pMap)
     mIm = cv::Mat(480,640,CV_8UC3, cv::Scalar(0,0,0));
 }
 
-cv::Mat FrameDrawer::DrawFrame()
+cv::Mat FrameDrawer::DrawFrame(orca_msgs::msg::Slam & msg)
 {
     cv::Mat im;
     vector<cv::KeyPoint> vIniKeys; // Initialization: KeyPoints in reference frame
@@ -120,14 +120,21 @@ cv::Mat FrameDrawer::DrawFrame()
     }
 
     cv::Mat imWithInfo;
-    DrawTextInfo(im,state, imWithInfo);
+    DrawTextInfo(im,state, imWithInfo, msg);
 
     return imWithInfo;
 }
 
 
-void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText)
+void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText, orca_msgs::msg::Slam & msg)
 {
+    msg.state = nState;
+    msg.only_tracking = mbOnlyTracking;
+    msg.keyframes = 0;
+    msg.map_points = 0;
+    msg.tracked = 0;
+    msg.tracked_v0 = 0;
+
     stringstream s;
     if(nState==Tracking::NO_IMAGES_YET)
         s << " WAITING FOR IMAGES";
@@ -144,6 +151,11 @@ void FrameDrawer::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText)
         s << "KFs: " << nKFs << ", MPs: " << nMPs << ", Matches: " << mnTracked;
         if(mnTrackedVO>0)
             s << ", + VO matches: " << mnTrackedVO;
+
+        msg.keyframes = nKFs;
+        msg.map_points = nMPs;
+        msg.tracked = mnTracked;
+        msg.tracked_v0 = mnTrackedVO;
     }
     else if(nState==Tracking::LOST)
     {

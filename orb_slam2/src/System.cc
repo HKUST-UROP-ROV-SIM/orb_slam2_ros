@@ -485,8 +485,8 @@ vector<cv::KeyPoint> System::GetTrackedKeyPointsUn()
     return mTrackedKeyPointsUn;
 }
 
-cv::Mat System::DrawCurrentFrame () {
-  return mpFrameDrawer->DrawFrame();
+cv::Mat System::DrawCurrentFrame (orca_msgs::msg::Slam & msg) {
+  return mpFrameDrawer->DrawFrame(msg);
 }
 
 std::vector<MapPoint*> System::GetAllMapPoints() {
