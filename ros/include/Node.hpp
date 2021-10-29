@@ -81,6 +81,7 @@ protected:
   std::shared_ptr<image_transport::ImageTransport> image_transport_;  // Not used in StereoNode, H264StereoNode
 
   bool subscribe_best_effort_param_;
+  orb_slam2_ros::msg::Status status_msg_;
 
 private:
   void PublishMapPoints(std::vector<ORB_SLAM2::MapPoint *> map_points);

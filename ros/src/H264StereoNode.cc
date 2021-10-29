@@ -155,6 +155,9 @@ void H264StereoNode::init()
       current_frame_time_ = msgLeft->header.stamp;
       orb_slam_->TrackStereo(rectLeft, rectRight, current_frame_time_.seconds());
 
+      status_msg_.header.stamp = now();
+      status_msg_.left_stamp = msgLeft->header.stamp;
+      status_msg_.right_stamp = msgRight->header.stamp;
       Update();
 
       STOP_PERF("SLAM time")

@@ -142,10 +142,10 @@ void Node::Update()
     }
   }
 
-  orb_slam2_ros::msg::Status msg;
-  PublishRenderedImage(orb_slam_->DrawCurrentFrame(msg));
-  // TODO add stamps for left and right images
-  PublishStatusMsg(msg);
+  PublishRenderedImage(orb_slam_->DrawCurrentFrame(status_msg_));
+
+  // Caller (StereoNode, etc.) must set timestamps
+  PublishStatusMsg(status_msg_);
 
   if (publish_pointcloud_param_) {
     PublishMapPoints(orb_slam_->GetAllMapPoints());

@@ -94,5 +94,7 @@ void RGBDNode::ImageCallback(
   rclcpp::Time msg_time = cv_ptrRGB->header.stamp;
   orb_slam_->TrackRGBD(cv_ptrRGB->image, cv_ptrD->image, msg_time.seconds());
 
+  status_msg_.header.stamp = now();
+  status_msg_.left_stamp = msgRGB->header.stamp;
   Update();
 }
