@@ -98,10 +98,12 @@ void H264StereoNode::init()
   // Run the SLAM in it's own thread
   slam_thread_ = std::thread([this]()
   {
+    using namespace std::chrono_literals;
+
     // Provide a mechanism to slow down the SLAM algorithm to reduce CPU load.
     int camera_fps;
     get_parameter("camera_fps", camera_fps);
-    auto target_period = rclcpp::Duration(1000000000 / camera_fps);
+    auto target_period = rclcpp::Duration(1000000000ns / camera_fps);
     rclcpp::Time previous_time = now();
 
     while (true) {

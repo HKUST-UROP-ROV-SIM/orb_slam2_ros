@@ -1,7 +1,7 @@
 CMakeLists.txt.user
 .idea/
-cmake-build-debug/
-.cmake-build-debug/
+cmake-build-*/
+.cmake-build-*/
 KeyFrameTrajectory.txt
 Thirdparty/DBoW2/build/
 Thirdparty/DBoW2/lib/
