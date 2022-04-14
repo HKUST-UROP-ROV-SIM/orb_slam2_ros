@@ -276,7 +276,7 @@ sensor_msgs::msg::PointCloud2 Node::MapPointsToPointCloud(
   float * data_array = new float[num_channels];
   for (unsigned int i = 0; i < cloud.width; i++) {
     if (map_points.at(i)->nObs >= min_observations_per_point_) {
-#define DOWN_FACING_CAMERA
+#undef DOWN_FACING_CAMERA
 #ifdef DOWN_FACING_CAMERA
       data_array[0] = -1.0 * map_points.at(i)->GetWorldPos().at<float>(1);
       data_array[1] = -1.0 * map_points.at(i)->GetWorldPos().at<float>(0);
