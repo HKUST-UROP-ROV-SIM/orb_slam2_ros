@@ -131,7 +131,8 @@ void StereoNode::ImageCallback(
     return;
   }
 
-  current_frame_time_ = msgLeft->header.stamp;
+  // current_frame_time_ = msgLeft->header.stamp;
+  current_frame_time_ = now();
 
   if (rectify_) {
     if (!left_model_.initialized() || !right_model_.initialized()) {

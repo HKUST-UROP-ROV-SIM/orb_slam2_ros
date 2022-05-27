@@ -154,7 +154,8 @@ void H264StereoNode::init()
       left_model_.rectifyImage(rawLeft, rectLeft);
       right_model_.rectifyImage(rawRight, rectRight);
 
-      current_frame_time_ = msgLeft->header.stamp;
+      // current_frame_time_ = msgLeft->header.stamp;
+      current_frame_time_ = now();
       orb_slam_->TrackStereo(rectLeft, rectRight, current_frame_time_.seconds());
 
       status_msg_.header.stamp = now();
