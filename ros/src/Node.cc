@@ -243,9 +243,9 @@ tf2::Transform Node::TransformFromMat(cv::Mat position_mat)
 sensor_msgs::msg::PointCloud2 Node::MapPointsToPointCloud(
   std::vector<ORB_SLAM2::MapPoint *> map_points)
 {
-  if (map_points.empty()) {
-    RCLCPP_WARN(get_logger(), "Map point vector is empty!");
-  }
+  // if (map_points.empty()) {
+  //   RCLCPP_WARN(get_logger(), "Map point vector is empty!");
+  // }
 
   sensor_msgs::msg::PointCloud2 cloud;
 
