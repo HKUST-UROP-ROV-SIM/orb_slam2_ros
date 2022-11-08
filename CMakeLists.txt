@@ -89,6 +89,8 @@ include(${PROJECT_SOURCE_DIR}/orb_slam2/Thirdparty/g2o/CMakeLists.txt)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/orb_slam2/lib)
 
+rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
+
 add_library(orb_slam2_ros_core SHARED
   orb_slam2/src/System.cc
   orb_slam2/src/Tracking.cc
@@ -120,7 +122,7 @@ target_link_libraries(orb_slam2_ros_core
   g2o
 )
 
-rosidl_target_interfaces(orb_slam2_ros_core ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(${PROJECT_NAME}_core "${cpp_typesupport_target}")
 
 # map serialization addition - library boost serialization 
 message(STATUS "Compile With map save/load function")
@@ -143,7 +145,7 @@ target_link_libraries(${PROJECT_NAME}_mono
   ${OpenCV_LIBS}
 )
 
-rosidl_target_interfaces(${PROJECT_NAME}_mono ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(${PROJECT_NAME}_mono "${cpp_typesupport_target}")
 
 #Stereo
 add_executable (${PROJECT_NAME}_stereo
@@ -158,7 +160,7 @@ target_link_libraries(${PROJECT_NAME}_stereo
   ${OpenCV_LIBS}
 )
 
-rosidl_target_interfaces(${PROJECT_NAME}_stereo ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(${PROJECT_NAME}_stereo "${cpp_typesupport_target}")
 
 #RGBD
 add_executable(${PROJECT_NAME}_rgbd
@@ -173,7 +175,7 @@ target_link_libraries(${PROJECT_NAME}_rgbd
   ${OpenCV_LIBS}
 )
 
-rosidl_target_interfaces(${PROJECT_NAME}_rgbd ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(${PROJECT_NAME}_rgbd "${cpp_typesupport_target}")
 
 #H264 Stereo
 add_executable (${PROJECT_NAME}_h264_stereo
@@ -193,7 +195,7 @@ target_link_libraries(${PROJECT_NAME}_h264_stereo
   ${PC_SWSCALE_LIBRARIES}
 )
 
-rosidl_target_interfaces(${PROJECT_NAME}_h264_stereo ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(${PROJECT_NAME}_h264_stereo "${cpp_typesupport_target}")
 
 install(TARGETS
   ${PROJECT_NAME}_mono
