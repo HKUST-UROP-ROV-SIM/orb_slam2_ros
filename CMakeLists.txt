@@ -30,8 +30,6 @@ find_package(image_transport REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
-find_package(stereo_decoder REQUIRED)
-find_package(h264_msgs REQUIRED)
 find_package(image_geometry REQUIRED)
 
 # ffmpeg libraries
@@ -52,8 +50,6 @@ set(dependencies
   image_transport
   tf2_geometry_msgs
   tf2_ros
-  stereo_decoder
-  h264_msgs
   image_geometry
 )
 
@@ -177,31 +173,10 @@ target_link_libraries(${PROJECT_NAME}_rgbd
 
 target_link_libraries(${PROJECT_NAME}_rgbd "${cpp_typesupport_target}")
 
-#H264 Stereo
-add_executable (${PROJECT_NAME}_h264_stereo
-  ros/src/H264StereoNode.cc
-  ros/src/Node.cc
-)
-ament_target_dependencies(${PROJECT_NAME}_h264_stereo
-  ${dependencies}
-)
-target_link_libraries(${PROJECT_NAME}_h264_stereo
-  orb_slam2_ros_core
-  ${OpenCV_LIBS}
-  ${PC_AVDEVICE_LIBRARIES}
-  ${PC_AVFORMAT_LIBRARIES}
-  ${PC_AVCODEC_LIBRARIES}
-  ${PC_AVUTIL_LIBRARIES}
-  ${PC_SWSCALE_LIBRARIES}
-)
-
-target_link_libraries(${PROJECT_NAME}_h264_stereo "${cpp_typesupport_target}")
-
 install(TARGETS
   ${PROJECT_NAME}_mono
   ${PROJECT_NAME}_stereo
   ${PROJECT_NAME}_rgbd
-  ${PROJECT_NAME}_h264_stereo
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
